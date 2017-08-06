@@ -5,8 +5,8 @@ const http = require('http');
 const bodyParser = require('body-parser');
 
 // Get our API routes
+const mongoose = require('mongoose');
 const api = require('./server/routes/api');
-
 const app = express();
 
 // Parsers for POST data
@@ -22,6 +22,14 @@ app.use('/api', api);
 // Catch all other routes and return the index file
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'dist/index.html'));
+});
+
+var dbUrl = 'mongodb://localhost/meanappdb';
+mongoose.connect(dbUrl);
+var db = mongoose.connection;
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', function() {
+  console.log('connected to ' + dbUrl);
 });
 
 /**
